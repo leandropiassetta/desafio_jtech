@@ -1,53 +1,53 @@
 # Dockerfile.tests
-# Build multistage para rodar TODOS os testes com garantia de compatibilidade
-# Testes: Backend (Integração + Unitários) + Frontend (Unitários)
+# Multi-stage build to run ALL tests with compatibility guarantee
+# Tests: Backend (Integration + Unit) + Frontend (Unit)
 
 # ═══════════════════════════════════════════════════════════════════
-# STAGE 1: Backend Tests (Integração + Unitários)
+# STAGE 1: Backend Tests (Integration + Unit)
 # ═══════════════════════════════════════════════════════════════════
 FROM eclipse-temurin:21-jdk-jammy AS backend-builder
 
 WORKDIR /backend
 
-# Copiar projeto backend COM gradle wrapper já baixado
+# Copy backend project WITH gradle wrapper already downloaded
 COPY jtech-tasklist-backend/ .
 
-# Instalar curl
+# Install curl
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Usar gradle distribuição do /gradle/wrapper e forçar offline se necessário
-RUN chmod +x ./gradlew && (./gradlew test -v --no-daemon 2>&1 || echo "Build falhou, continuando...")
+# Use gradle distribution from /gradle/wrapper and force offline if necessary
+RUN chmod +x ./gradlew && (./gradlew test -v --no-daemon 2>&1 || echo "Build failed, continuing...")
 
 # ═══════════════════════════════════════════════════════════════════
-# STAGE 2: Frontend Tests (Unitários)
+# STAGE 2: Frontend Tests (Unit)
 # ═══════════════════════════════════════════════════════════════════
 FROM node:22-alpine AS frontend-builder
 
 WORKDIR /frontend
 
-# Copiar projeto frontend
+# Copy frontend project
 COPY jtech-tasklist-frontend/ .
 
-# Instalar dependências
+# Install dependencies
 RUN npm ci --legacy-peer-deps
 
-# Rodar testes unitários do frontend
-RUN npm run test:unit -- --run 2>&1 || echo "Frontend tests finalizados"
+# Run frontend unit tests
+RUN npm run test:unit -- --run 2>&1 || echo "Frontend tests completed"
 
 # ═══════════════════════════════════════════════════════════════════
-# STAGE 3: Resultado Final (Consolidado)
+# STAGE 3: Final Results (Consolidated)
 # ═══════════════════════════════════════════════════════════════════
 FROM alpine:latest
 
 WORKDIR /results
 
-# Copiar arquivos de teste dos stages anteriores
+# Copy test files from previous stages
 RUN mkdir -p ./backend-results ./backend-reports
 
 COPY --from=backend-builder /backend/build/test-results/ ./backend-results/
 COPY --from=backend-builder /backend/build/reports/tests/ ./backend-reports/
 
-# Script para exibir resultado final
+# Script to display final results
 RUN echo '#!/bin/sh' > /show-results.sh && \
     echo 'echo ""' >> /show-results.sh && \
     echo 'echo "╔════════════════════════════════════════════════════════════════╗"' >> /show-results.sh && \

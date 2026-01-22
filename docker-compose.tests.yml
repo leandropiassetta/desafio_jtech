@@ -57,10 +57,10 @@ services:
       npm ci --legacy-peer-deps > /dev/null 2>&1 &&
       npm run test:unit -- --run &&
       echo '' &&
-      echo '⚠️  Frontend: Sem testes de integração configurados'
+      echo '⚠️  Frontend: No integration tests configured'
       "
 
-  # Serviço que executa TODOS os testes
+  # Service that runs ALL tests
   all-tests:
     image: node:22-alpine
     working_dir: /workspace

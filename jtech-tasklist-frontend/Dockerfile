@@ -3,25 +3,25 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Copiar apenas package*.json para aproveitar cache do Docker
+# Copy only package*.json to leverage Docker cache
 COPY package*.json ./
 
-# Instalar dependências
+# Install dependencies
 RUN npm ci
 
-# Copiar código-fonte
+# Copy source code
 COPY . .
 
-# Build da aplicação
+# Build application
 RUN npm run build
 
 # Stage 2: Runtime
 FROM nginx:alpine
 
-# Copiar configuração nginx customizada
+# Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copiar arquivos built do stage anterior
+# Copy built files from previous stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Health check

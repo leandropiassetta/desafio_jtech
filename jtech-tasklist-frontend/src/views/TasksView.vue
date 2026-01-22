@@ -49,7 +49,7 @@ onMounted(async () => {
   await loadTasks()
 })
 
-/* Funções */
+/* Functions */
 const loadTasks = async () => {
   await taskStore.fetchTasks({ status: filterStatus.value })
 }

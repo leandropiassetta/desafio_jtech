@@ -33,5 +33,5 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped>
-/* Estilos específicos do App.vue usando design tokens */
+/* App.vue specific styles using design tokens */
 </style>
