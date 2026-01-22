@@ -164,10 +164,180 @@ curl -X POST http://localhost/api/tasks \
   }'
 ```
 
+**Status válidos:** `"pendente"` ou `"concluída"`
+
+**Resposta (201 Created):**
+```json
+{
+  "id": 24,
+  "title": "Estudar Clean Architecture",
+  "description": "Revisar princípios e aplicar no projeto",
+  "status": "pendente",
+  "createdAt": "2026-01-22T15:19:14Z",
+  "updatedAt": "2026-01-22T15:19:14Z"
+}
+```
+
 ### Listar Tarefas
 
 ```bash
 curl http://localhost/api/tasks
+```
+
+**Parâmetros opcionais:**
+- `?page=0` - Página (começa em 0)
+- `?size=20` - Itens por página (padrão 20)
+- `?status=pendente` - Filtrar por status
+
+**Resposta (200 OK):**
+```json
+{
+  "content": [
+    {
+      "id": 1,
+      "title": "Buy groceries",
+      "description": "Milk, eggs, bread, and butter",
+      "status": "pendente",
+      "createdAt": "2026-01-21T21:24:14Z",
+      "updatedAt": "2026-01-21T21:24:14Z"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 20
+  },
+  "totalElements": 21,
+  "totalPages": 2
+}
+```
+
+### Buscar Tarefa por ID
+
+```bash
+curl http://localhost/api/tasks/1
+```
+
+**Resposta (200 OK):**
+```json
+{
+  "id": 1,
+  "title": "Buy groceries",
+  "description": "Milk, eggs, bread, and butter",
+  "status": "pendente",
+  "createdAt": "2026-01-21T21:24:14Z",
+  "updatedAt": "2026-01-21T21:24:14Z"
+}
+```
+
+**Se não encontrar (404 Not Found):**
+```json
+{
+  "type": "about:blank",
+  "title": "Task not found",
+  "status": 404,
+  "detail": "Task with id 999 was not found",
+  "instance": "/tasks/999"
+}
+```
+
+### Atualizar Tarefa (Parcial)
+
+```bash
+# Atualizar apenas o status
+curl -X PUT http://localhost/api/tasks/1 \
+  -H "Content-Type: application/json" \
+  -d '{"status": "concluída"}'
+
+# Atualizar título e descrição
+curl -X PUT http://localhost/api/tasks/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Buy groceries - UPDATED",
+    "description": "Updated on Saturday"
+  }'
+
+# Atualizar todos os campos
+curl -X PUT http://localhost/api/tasks/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "New Title",
+    "description": "New Description",
+    "status": "concluída"
+  }'
+```
+
+> ℹ️ **Importante:** Todos os campos são opcionais. Envie apenas os que deseja atualizar.
+
+**Resposta (200 OK):**
+```json
+{
+  "id": 1,
+  "title": "Buy groceries - UPDATED",
+  "description": "Updated on Saturday",
+  "status": "concluída",
+  "createdAt": "2026-01-21T21:24:14Z",
+  "updatedAt": "2026-01-22T15:25:30Z"
+}
+```
+
+### Deletar Tarefa
+
+```bash
+curl -X DELETE http://localhost/api/tasks/1
+```
+
+**Resposta (204 No Content)** - Sem corpo de resposta
+
+---
+
+## 🔴 Formato de Erros
+
+A API retorna erros em formato **RFC 7807** (Problem Details for HTTP APIs):
+
+### Erro de Validação (400 Bad Request)
+
+```bash
+curl -X POST http://localhost/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title": "", "status": "invalido"}'
+```
+
+**Resposta:**
+```json
+{
+  "type": "about:blank",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "Validation failed",
+  "instance": "/tasks",
+  "errors": [
+    {
+      "field": "title",
+      "message": "Title must not be blank"
+    },
+    {
+      "field": "status",
+      "message": "Invalid status value"
+    }
+  ]
+}
+```
+
+### Recurso Não Encontrado (404 Not Found)
+
+```bash
+curl http://localhost/api/tasks/999
+```
+
+**Resposta:**
+```json
+{
+  "type": "about:blank",
+  "title": "Task not found",
+  "status": 404,
+  "detail": "Task with id 999 was not found",
+  "instance": "/tasks/999"
+}
 ```
 
 ---

@@ -16,10 +16,19 @@ public class UpdateTaskUseCase {
                 .orElseThrow(() -> new TaskNotFoundException("Task with id " + id + " was not found"));
 
         // Only update fields that were provided (not null)
-        if (title != null && !title.isBlank()) {
+        if (title != null) {
+            if (title.isBlank()) {
+                throw new IllegalArgumentException("Title must not be blank");
+            }
+            if (title.length() > 120) {
+                throw new IllegalArgumentException("Title must not exceed 120 characters");
+            }
             task.setTitle(title);
         }
         if (description != null) {
+            if (description.length() > 1000) {
+                throw new IllegalArgumentException("Description must not exceed 1000 characters");
+            }
             task.setDescription(description);
         }
         if (status != null) {

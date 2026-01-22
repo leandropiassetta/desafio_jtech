@@ -5,7 +5,16 @@
 *.swp
 *.swo
 
-# Build
+# Build - Backend
+jtech-tasklist-backend/build/
+jtech-tasklist-backend/.gradle/
+jtech-tasklist-backend/*.log
+
+# Build - Frontend
+jtech-tasklist-frontend/dist/
+jtech-tasklist-frontend/node_modules/
+
+# Build artifacts
 build/
 dist/
 target/
@@ -29,12 +38,12 @@ logs/
 .Trashes
 ehthumbs.db
 Thumbs.db
+__MACOSX/
 
 # Node/Frontend
 node_modules/
 npm-debug.log
 yarn-error.log
-dist/
 .next/
 
 # Docker

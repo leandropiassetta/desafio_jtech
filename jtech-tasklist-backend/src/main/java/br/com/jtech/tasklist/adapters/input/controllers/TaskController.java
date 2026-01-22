@@ -96,7 +96,12 @@ public class TaskController {
     public ResponseEntity<TaskResponse> updateTask(
             @PathVariable Long id,
             @Valid @RequestBody UpdateTaskRequest request) throws TaskNotFoundException {
-        Task task = updateTaskUseCase.execute(id, request.title(), request.description(), request.status());
+        Task task = updateTaskUseCase.execute(
+                id,
+                request.title().orElse(null),
+                request.description().orElse(null),
+                request.status().orElse(null)
+        );
         return ResponseEntity.ok(toResponse(task));
     }
 
