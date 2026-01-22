@@ -3,10 +3,8 @@ package br.com.jtech.tasklist.config.infra.swagger;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.servers.ServerVariable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,10 +15,7 @@ import org.springframework.context.annotation.Configuration;
                 title = "JTech Task List API",
                 description = "REST API for Task Management with CRUD operations, filtering, and pagination",
                 version = "1.0.0"
-        ),
-        servers = {
-                @Server(url = "http://localhost:8080", description = "Development")
-        }
+        )
 )
 public class OpenAPI30Configuration {
     
@@ -36,9 +31,6 @@ public class OpenAPI30Configuration {
                                 .email("contato@jtech.com.br"))
                         .license(new License()
                                 .name("Apache 2.0")
-                                .url("https://www.apache.org/licenses/LICENSE-2.0.html")))
-                .addServersItem(new io.swagger.v3.oas.models.servers.Server()
-                        .url("http://localhost:8080")
-                        .description("Development Server"));
+                                .url("https://www.apache.org/licenses/LICENSE-2.0.html")));
     }
 }
