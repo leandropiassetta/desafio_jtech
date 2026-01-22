@@ -46,14 +46,14 @@ public class TaskRepositoryAdapter implements TaskRepositoryPort {
     }
 
     private TaskEntity toEntity(Task task) {
-        TaskEntity entity = new TaskEntity();
-        entity.setId(task.getId());
-        entity.setTitle(task.getTitle());
-        entity.setDescription(task.getDescription());
-        entity.setStatus(task.getStatus());
-        entity.setCreatedAt(task.getCreatedAt());
-        entity.setUpdatedAt(task.getUpdatedAt());
-        return entity;
+        return new TaskEntity(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getStatus(),
+                task.getCreatedAt(),
+                task.getUpdatedAt()
+        );
     }
 
     private Task toDomain(TaskEntity entity) {
