@@ -1,0 +1,5 @@
+# .sdkmanrc
+# Especifica a versão do Java para o projeto
+# Use sdkman para gerenciar versões: https://sdkman.io/
+
+java=21.0.1-tem

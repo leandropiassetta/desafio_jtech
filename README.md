@@ -1,62 +1,346 @@
-# Desafio Técnico Fullstack 1 - JTech
+# 📋 Desafio Técnico Fullstack 1 – JTech
 
-## API RESTful para Gerenciamento de Tarefas
+> **API RESTful para Gerenciamento de Tarefas (TODO List)**
 
-### Contextualização e Objetivo
+## 📝 Visão Geral do Projeto
 
-A **JTech** busca identificar profissionais que demonstrem sólido conhecimento nos fundamentos do desenvolvimento backend. Este desafio técnico foi elaborado para avaliar suas competências na construção de APIs RESTful utilizando Java e Spring Boot.
+Este projeto é uma solução completa para o Desafio Técnico Fullstack 1 da JTech. Trata-se de uma API RESTful robusta para gerenciamento de tarefas, desenvolvida com foco em **Clean Architecture**, testabilidade e boas práticas de desenvolvimento.
 
-**Objetivo:** Desenvolver uma API completa para gerenciamento de tarefas (TODO List), aplicando boas práticas de desenvolvimento, arquitetura limpa e documentação técnica de qualidade.
-
-## Especificações Técnicas
-
-### Requisitos Funcionais
-
-1. **Criar Tarefa**: Endpoint `POST /tasks` para adicionar uma nova tarefa. A tarefa deve conter título, descrição e status (ex: "pendente", "concluída").
-2. **Listar Tarefas**: Endpoint `GET /tasks` para retornar todas as tarefas cadastradas.
-3. **Buscar Tarefa por ID**: Endpoint `GET /tasks/{id}` para obter os detalhes de uma tarefa específica.
-4. **Atualizar Tarefa**: Endpoint `PUT /tasks/{id}` para atualizar o título, a descrição ou o status de uma tarefa.
-5. **Deletar Tarefa**: Endpoint `DELETE /tasks/{id}` para remover uma tarefa do sistema.
-
-### Requisitos Não Funcionais
-
-1. **Persistência de Dados**: As tarefas devem ser armazenadas em banco de dados. Recomenda-se H2 (em memória) para simplificação ou PostgreSQL para demonstrar conhecimento em bancos relacionais.
-2. **Validação de Dados**: Implementar validação robusta das entradas do usuário (ex: título da tarefa obrigatório e não vazio).
-3. **Tratamento de Erros**: A API deve retornar códigos de status HTTP apropriados e mensagens de erro claras (ex: 404 para tarefa não encontrada, 400 para dados inválidos).
-
-### Stack Tecnológica Obrigatória
-
-* **Linguagem**: Java
-* **Framework**: Spring Boot
-* **Persistência**: Spring Data JPA com Hibernate
-* **Banco de Dados**: H2 (em memória) ou PostgreSQL
-* **Testes**: Testes unitários com JUnit/Mockito.
-
-## Critérios de Avaliação
-
-* **Qualidade e Organização do Código**: Código limpo, legível e seguindo as convenções do Java.
-* **Aplicação de Boas Práticas**: Utilização de princípios como Clean Code e KISS.
-* **Funcionalidade**: Todos os endpoints devem funcionar conforme especificado.
-* **Testes Automatizados**: Cobertura de testes unitários para as classes de serviço e controllers.
-* **Uso Adequado da Stack**: Configuração correta do Spring Boot, JPA e do banco de dados.
-* **Modelagem de Dados**: Estrutura da entidade `Task` bem definida.
-* **Controle de Versão**: Commits claros e lógicos no Git.
-
-## Expectativa de Entrega
-
-* **Prazo**: Até 3 dias corridos a partir do recebimento.
-* **Formato**: Entregar o código-fonte em um repositório Git, acompanhado de um `README.md` completo.
-
-### Estrutura Obrigatória do `README.md`
-
-1. **Visão Geral do Projeto**: Breve descrição da API e seus objetivos.
-2. **Stack Utilizada**: Lista das tecnologias implementadas.
-3. **Como Rodar Localmente**: Instruções para configurar o ambiente, instalar dependências e iniciar o servidor.
-4. **Como Rodar os Testes**: Comando para executar os testes.
-5. **Estrutura de Pastas**: Explicação da organização do projeto.
-6. **Decisões Técnicas**: Justificativas para as escolhas feitas (ex: por que usou H2 em vez de PostgreSQL).
-7. **Melhorias Futuras**: Sugestões para evoluir a API.
+Embora o foco principal seja o backend em Java/Spring Boot, inclui um frontend em Vue.js 3 para demonstrar a integração completa (fullstack) e proporcionar uma melhor experiência de uso.
 
 ---
 
-**Boa sorte! A JTech está ansiosa para conhecer sua solução.**
+## 🚀 Funcionalidades Principais
+
+- ✅ Criar tarefas com título, descrição e status
+- ✅ Listar tarefas com suporte a paginação
+- ✅ Buscar tarefa específica por ID
+- ✅ Atualizar dados de tarefas existentes
+- ✅ Remover tarefas do sistema
+- ✅ Documentação interativa via Swagger
+
+---
+
+## 🛠️ Stack Tecnológica
+
+### Backend
+
+| Componente | Tecnologia |
+|-----------|-----------|
+| Linguagem | Java 21 |
+| Framework | Spring Boot 3 |
+| Persistência | Spring Data JPA / Hibernate |
+| Migrações | Flyway |
+| Testes | JUnit 5, Mockito, Spring Boot Test |
+| Documentação | Swagger UI (OpenAPI 3) |
+
+### Frontend
+
+| Componente | Tecnologia |
+|-----------|-----------|
+| Framework | Vue.js 3 (Composition API) |
+| Linguagem | TypeScript |
+| Gerenciamento de Estado | Pinia |
+| Build Tool | Vite |
+| Testes | Vitest |
+
+### Infraestrutura
+
+| Componente | Tecnologia |
+|-----------|-----------|
+| Banco de Dados | PostgreSQL (Docker/Prod) & H2 (Dev/Testes) |
+| Proxy/Web Server | Nginx |
+| Containerização | Docker & Docker Compose |
+
+---
+
+## 📋 Pré-requisitos
+
+> ⚠️ **Recomendado: Use Docker Compose**
+> 
+> É a forma mais confiável e requer apenas Docker.
+
+### Para Docker Compose (Recomendado)
+
+- Docker >= 20.10
+- Docker Compose >= 2.0
+
+### Para Rodar Backend Local
+
+- Java 21+ (exatamente 21, não versões mais novas como 25)
+- Gradle 8.x (vem incluído via `./gradlew`)
+
+### Para Rodar Frontend Local
+
+- Node.js >= 20.19.x ou >= 22.12.x (**NÃO** 18.x)
+- npm >= 9.x ou yarn/pnpm equivalente
+
+### Verificar Versões Instaladas
+
+```bash
+# Java
+java -version
+# Deve mostrar: Java 21.x
+
+# Node e npm
+node --version
+# Deve mostrar: >= 20.19 ou >= 22.12
+npm --version
+# Deve mostrar: >= 9
+
+# Docker
+docker --version
+# Deve mostrar: >= 20.10
+docker-compose --version
+# Deve mostrar: >= 2.0
+```
+
+---
+
+## ⚡ Quick Start
+
+### 🐳 Opção 1: Docker Compose (Recomendado)
+
+Para subir todo o ecossistema (Backend, Banco de Dados, Nginx e Frontend) em um único comando:
+
+```bash
+docker-compose up -d --build
+```
+
+**Acessos Disponíveis:**
+
+| Serviço | URL |
+|---------|-----|
+| Interface Web | http://localhost |
+| API (via Proxy) | http://localhost/api/tasks |
+| Swagger UI | http://localhost/swagger-ui.html |
+| API Direta | http://localhost:8080/tasks |
+
+### 💻 Opção 2: Backend Local (Modo H2)
+
+Caso prefira rodar apenas o backend sem Docker (utiliza banco em memória):
+
+```bash
+cd jtech-tasklist-backend
+./gradlew bootRun
+```
+
+---
+
+## 💡 Exemplo de Uso da API
+
+### Criar Tarefa
+
+```bash
+curl -X POST http://localhost:8080/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Estudar Clean Architecture",
+    "description": "Revisar princípios e aplicar no projeto",
+    "status": "pendente"
+  }'
+```
+
+### Listar Tarefas
+
+```bash
+curl http://localhost:8080/api/tasks
+```
+
+---
+
+## 📁 Estrutura do Projeto
+
+O projeto segue os princípios de **Clean Architecture / Ports & Adapters**:
+
+```
+jtech-tasklist-backend/
+├── src/main/java/br/com/jtech/tasklist/
+│   ├── adapters/
+│   │   ├── input/                 # Controllers e DTOs (Entrada)
+│   │   └── output/                # Repositories e Gateways (Saída)
+│   ├── application/
+│   │   ├── core/                  # Regras de Negócio e Casos de Uso
+│   │   ├── ports/                 # Interfaces de entrada/saída
+│   │   └── config/                # Beans e configurações do Spring
+│   └── config/
+│       ├── usecases/              # Configuração de UseCases
+│       └── infra/                 # Configuração de infraestrutura
+└── src/test/                      # Testes Unitários e de Integração
+
+jtech-tasklist-frontend/
+├── src/
+│   ├── views/                     # Páginas da aplicação
+│   ├── stores/                    # Gerenciamento de estado (Pinia)
+│   ├── services/                  # Integração com API
+│   ├── types/                     # Tipos TypeScript
+│   ├── components/                # Componentes Vue reutilizáveis
+│   ├── router/                    # Configuração Vue Router
+│   └── assets/                    # Estilos CSS
+└── public/                        # Arquivos estáticos
+```
+
+---
+
+## 🧪 Testes
+
+### Via Docker (Recomendado)
+
+Ambiente isolado, sem dependências locais:
+
+```bash
+docker-compose -f docker-compose.tests.yml up --build --exit-code-from test-backend
+```
+
+**Isso executa:**
+- ✅ Testes unitários do backend (JUnit 5)
+- ✅ Testes de integração (Spring Boot Test)
+- ✅ Testes unitários do frontend (Vitest)
+- ✅ Geração de relatórios de cobertura
+
+### Local - Backend (requer Java 21+)
+
+```bash
+cd jtech-tasklist-backend
+
+# Testes unitários
+./gradlew test
+
+# Apenas testes de integração
+./gradlew test --tests "*Integration*"
+
+# Gerar relatório de cobertura (Jacoco)
+./gradlew jacocoTestReport
+# Resultado: build/reports/jacoco/test/html/index.html
+```
+
+### Local - Frontend (requer Node.js 20.19+)
+
+```bash
+cd jtech-tasklist-frontend
+
+# Testes com Vitest
+npm run test:unit
+
+# Verificar ESLint
+npm run lint
+
+# Validação TypeScript
+npm run type-check
+```
+
+---
+
+## 🤔 Decisões Técnicas
+
+| Decisão | Justificativa |
+|---------|--------------|
+| **Clean Architecture** | Garantir que a lógica de negócio seja independente de frameworks externos |
+| **Tratamento de Erros RFC 7807** | Retornar respostas padronizadas para erros de validação (400) e recursos não encontrados (404) |
+| **Paginação com Pageable** | Evitar problemas de performance com grandes volumes de dados |
+| **Dual Database Support** | H2 para desenvolvimento local, PostgreSQL para Docker/produção |
+| **Vue 3 + TypeScript** | Frontend type-safe com reatividade moderna e melhor DX |
+| **Nginx Proxy** | Simplifica deploy, resolve CORS naturalmente, centraliza portas |
+
+---
+
+## 🐛 Troubleshooting
+
+### ❌ Erro: "Node.js 18.20.8. Vite requires Node.js version 20.19+ or 22.12+"
+
+**Causa:** Node instalado é versão 18, mas Vite requer 20+
+
+**Solução:**
+- Atualizar Node.js: https://nodejs.org/
+- Ou usar Docker Compose (que já tem versões corretas)
+- Ou usar `nvm`:
+  ```bash
+  nvm install 20
+  nvm use 20
+  ```
+
+### ❌ Erro: "Gradle build uses Java 21 but found Java 25"
+
+**Causa:** Projeto configurado para Java 21, mas sistema tem versão diferente
+
+**Solução:**
+- Instalar Java 21: https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html
+- Ou usar Docker Compose (não requer Java local)
+- Ou usar `sdkman`:
+  ```bash
+  sdk install java 21.0.1-tem
+  sdk use java 21.0.1-tem
+  ```
+
+### ❌ Erro: "Cannot find module @rollup/rollup-darwin-x64"
+
+**Causa:** Dependências npm corrompidas ou incompletas
+
+**Solução:**
+```bash
+cd jtech-tasklist-frontend
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### ❌ Erro: CORS error ao conectar API do frontend
+
+**Causa:** Frontend tentando acessar backend com URL errada
+
+**Solução:**
+- Se usando Docker Compose: URLs já estão corretas
+- Se frontend local + backend Docker:
+  ```bash
+  # Criar .env.local em jtech-tasklist-frontend/
+  echo "VITE_API_URL=http://localhost:8080" > jtech-tasklist-frontend/.env.local
+  
+  # Reiniciar npm run dev
+  ```
+
+### ❌ Erro: Docker Compose não inicia
+
+**Causa:** Portas 80, 8080 ou 5432 já em uso
+
+**Solução:**
+```bash
+# Ver o que está usando as portas
+lsof -i :80
+lsof -i :8080
+lsof -i :5432
+
+# Ou parar todos os containers
+docker-compose down
+docker ps  # Verificar se realmente parou
+```
+
+### ❌ Erro: Frontend mostra página em branco
+
+**Causa:** Build não foi executado ou Nginx não encontra arquivos
+
+**Solução:**
+```bash
+cd jtech-tasklist-frontend
+npm run build  # Gerar arquivos em dist/
+
+# Reiniciar Docker Compose
+docker-compose down && docker-compose up --build
+```
+
+---
+
+## 🎯 Melhorias Futuras
+
+- [ ] Implementação de Autenticação JWT
+- [ ] Suporte a PATCH para atualizações parciais
+- [ ] Categorização de tarefas com Tags
+- [ ] Dashboards de produtividade no Frontend
+- [ ] Cache com Redis
+- [ ] WebSocket para real-time updates
+
+---
+
+## 📄 Notas Finais
+
+> ℹ️ Este projeto foi desenvolvido para fins avaliativos do Desafio Técnico Fullstack 1 da JTech.
+> 
+> O frontend é um complemento opcional para demonstrar habilidades fullstack completas.

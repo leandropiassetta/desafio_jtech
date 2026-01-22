@@ -1,0 +1,27 @@
+FROM eclipse-temurin:21-jdk-jammy
+
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Definir GRADLE_USER_HOME para persistência de cache
+ENV GRADLE_USER_HOME=/gradle-cache
+
+# Criar diretório de cache
+RUN mkdir -p $GRADLE_USER_HOME
+
+# Copiar apenas os arquivos de configuração do Gradle (para melhor caching)
+COPY gradlew ./
+COPY gradle ./gradle
+COPY gradle.properties ./
+COPY settings.gradle ./
+
+# Pré-aquecer o cache do Gradle
+RUN chmod +x ./gradlew && ./gradlew --version > /dev/null 2>&1 || true
+
+# Copiar o código-fonte
+COPY src ./src
+COPY build.gradle ./
+
+# Comando padrão
+CMD ["./gradlew", "test", "--console=plain", "--no-daemon", "--info"]

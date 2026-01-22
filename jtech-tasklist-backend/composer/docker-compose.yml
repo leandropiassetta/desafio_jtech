@@ -1,4 +1,49 @@
-version: '3.0'
+version: '3.8'
+
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tasklist-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tasklist_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dev-services
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    container_name: tasklist-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DS_URL: postgres
+      DS_PORT: 5432
+      DS_DATABASE: tasklist_db
+      DS_USER: postgres
+      DS_PASS: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - dev-services
+
 networks:
   dev-services:
+    driver: bridge
+
+volumes:
+  postgres_data:
+

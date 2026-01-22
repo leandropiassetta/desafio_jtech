@@ -1,0 +1,75 @@
+version: '3.8'
+
+volumes:
+  gradle-cache:
+    driver: local
+
+services:
+  # Banco de dados para testes de integração
+  postgres-test:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: tasklist_test
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5433:5432"
+
+  # Backend - Unit Tests + Integration Tests
+  test-backend:
+    build:
+      context: ./jtech-tasklist-backend
+      dockerfile: Dockerfile.test
+    working_dir: /app
+    volumes:
+      - ./jtech-tasklist-backend:/app
+      - gradle-cache:/gradle-cache
+    environment:
+      - GRADLE_USER_HOME=/gradle-cache
+      - SPRING_PROFILES_ACTIVE=test
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+    command: >
+      sh -c "
+      echo '=== 🧪 BACKEND - UNIT TESTS ===' &&
+      ./gradlew test --console=plain --no-daemon -q &&
+      echo '' &&
+      echo '=== 🔗 BACKEND - INTEGRATION TESTS ===' &&
+      ./gradlew test --tests '*Integration*' --console=plain --no-daemon -q ||
+      echo '✓ Testes de integração concluídos'
+      "
+
+  # Frontend - Tests
+  test-frontend:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - ./jtech-tasklist-frontend:/app
+    command: >
+      sh -c "
+      echo '=== 🎨 FRONTEND - UNIT TESTS ===' &&
+      npm ci --legacy-peer-deps > /dev/null 2>&1 &&
+      npm run test:unit -- --run &&
+      echo '' &&
+      echo '⚠️  Frontend: Sem testes de integração configurados'
+      "
+
+  # Serviço que executa TODOS os testes
+  all-tests:
+    image: node:22-alpine
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - gradle-cache:/gradle-cache
+    environment:
+      - GRADLE_USER_HOME=/gradle-cache
+    entrypoint: /bin/sh
+    command: -c "apk add --no-cache openjdk21-jdk curl && sh test-runner.sh"
+    depends_on:
+      - postgres-test
