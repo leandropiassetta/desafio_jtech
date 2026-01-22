@@ -107,6 +107,14 @@ Para subir todo o ecossistema (Backend, Banco de Dados, Nginx e Frontend) em um 
 docker-compose up -d --build
 ```
 
+> ℹ️ **Migrations Automáticas**
+> 
+> As migrations do banco de dados (Flyway) são executadas **automaticamente** quando o backend inicia:
+> - `V1__create_tasks.sql` → Cria a tabela `tasks`
+> - `V2__seed_tasks.sql` → Popula dados de exemplo (opcional)
+> 
+> Você **não precisa fazer nada manualmente**. O Spring Boot detecta o perfil `docker` e executa as migrations automaticamente.
+
 **Acessos Disponíveis:**
 
 | Serviço | URL |
@@ -115,6 +123,21 @@ docker-compose up -d --build
 | API (via Proxy) | http://localhost/api/tasks |
 | Swagger UI | http://localhost/swagger-ui.html |
 | API Direta | http://localhost:8080/tasks |
+
+**Verificar Status do Backend:**
+
+Se o backend não iniciar, verifique os logs:
+
+```bash
+# Ver logs do backend
+docker logs tasklist-backend
+
+# Ver logs do banco de dados
+docker logs tasklist-postgres
+
+# Ver status de todos os containers
+docker-compose ps
+```
 
 ### 💻 Opção 2: Backend Local (Modo H2)
 
@@ -245,6 +268,45 @@ npm run type-check
 ---
 
 ## 🐛 Troubleshooting
+
+### ❌ Erro: "Unable to build Hibernate SessionFactory" ou "Missing table 'tasks'"
+
+**Causa:** Migrations do Flyway não foram executadas no banco de dados PostgreSQL
+
+**Solução:**
+
+1. Verifique se o PostgreSQL está saudável:
+   ```bash
+   docker-compose ps
+   # postgres deve estar com status "healthy" antes do backend iniciar
+   ```
+
+2. Verifique os logs do backend:
+   ```bash
+   docker logs tasklist-backend
+   ```
+
+3. Se o banco de dados foi criado sem as migrations, você pode:
+   ```bash
+   # Parar os containers
+   docker-compose down
+   
+   # Remover o volume do banco de dados (⚠️ isso apaga os dados)
+   docker volume rm desafio_jtech_postgres_data
+   
+   # Recriá-lo do zero
+   docker-compose up -d --build
+   ```
+
+4. Verifique se as migrations estão presentes:
+   ```bash
+   ls jtech-tasklist-backend/src/main/resources/db/migration/
+   # Deve mostrar: V1__create_tasks.sql e V2__seed_tasks.sql
+   ```
+
+5. Se ainda não funcionar, verifique o arquivo `application-docker.yml`:
+   - Flyway deve estar `enabled: true`
+   - Locations deve apontar para `classpath:db/migration`
 
 ### ❌ Erro: "Node.js 18.20.8. Vite requires Node.js version 20.19+ or 22.12+"
 
