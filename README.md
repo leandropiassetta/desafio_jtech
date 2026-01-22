@@ -120,9 +120,9 @@ docker-compose up -d --build
 | Serviço | URL |
 |---------|-----|
 | Interface Web | http://localhost |
-| API (via Proxy) | http://localhost/api/tasks |
+| **API (via Nginx - USE ESTE)** | **http://localhost/api/tasks** |
 | Swagger UI | http://localhost/swagger-ui.html |
-| API Direta | http://localhost:8080/tasks |
+| API Direta (apenas dev) | http://localhost:8080/api/tasks |
 
 **Verificar Status do Backend:**
 
@@ -155,7 +155,7 @@ cd jtech-tasklist-backend
 ### Criar Tarefa
 
 ```bash
-curl -X POST http://localhost:8080/api/tasks \
+curl -X POST http://localhost/api/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Estudar Clean Architecture",
@@ -167,7 +167,7 @@ curl -X POST http://localhost:8080/api/tasks \
 ### Listar Tarefas
 
 ```bash
-curl http://localhost:8080/api/tasks
+curl http://localhost/api/tasks
 ```
 
 ---
